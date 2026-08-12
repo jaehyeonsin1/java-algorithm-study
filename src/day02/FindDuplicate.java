@@ -1,41 +1,61 @@
-package day02;
+    package day02;
 
-public class FindDuplicate {
+    import java.util.HashSet;
+    import java.util.Set;
 
-    /*
-    [문제] 중복 숫자 찾기
+    public class FindDuplicate {
 
-    정수 배열 numbers가 주어졌을 때,
-    같은 숫자가 두 번 이상 등장하면 true,
-    모든 숫자가 서로 다르면 false를 반환하시오.
+        /*
+        [문제] 중복 숫자 찾기
 
-    예시 1
-    입력: [1, 2, 3, 2, 5]
-    출력: true
+        정수 배열 numbers가 주어졌을 때,
+        같은 숫자가 두 번 이상 등장하면 true,
+        모든 숫자가 서로 다르면 false를 반환하시오.
 
-    예시 2
-    입력: [1, 2, 3, 4, 5]
-    출력: false
-    */
+        예시 1
+        입력: [1, 2, 3, 2, 5]
+        출력: true
 
-    public static void main(String[] args) {
-        int[] numbers = {1, 2, 3, 2, 5};
+        예시 2
+        입력: [1, 2, 3, 4, 5]
+        출력: false
+        */
 
-        boolean result = solution(numbers);
+        public static void main(String[] args) {
+            int[] numbers = {1, 2, 3, 2, 5};
 
-        System.out.println(result); // true
-    }
+            boolean result = solution(numbers);
 
-    public static boolean solution(int[] numbers) {
+            System.out.println(result); // true
 
-        // TODO: 직접 구현
-        for(int i = 0; i < numbers.length; i++){
-            for(int j = i + 1; j < numbers.length; j++){
-                if(numbers[i] == numbers[j]){
+            boolean setResult = solutionWithSet(numbers);
+            System.out.println(setResult);
+        }
+
+        public static boolean solution(int[] numbers) {
+
+            // TODO: 직접 구현
+            for(int i = 0; i < numbers.length; i++){
+                for(int j = i + 1; j < numbers.length; j++){
+                    if(numbers[i] == numbers[j]){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static boolean solutionWithSet(int[] numbers) {
+
+            Set<Integer> set = new HashSet<>();
+
+            // TODO: 직접 구현
+            for (int number : numbers) {
+                if (!set.add(number)){
                     return true;
                 }
             }
+
+            return false;
         }
-        return false;
     }
-}
