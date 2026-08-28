@@ -75,12 +75,11 @@ public class SameFrequency {
 
         Map<Integer, Integer> map = new HashMap<>();
 
-        // 첫 번째 배열의 숫자 개수 저장
         for (int number : numbers1) {
             map.put(number, map.getOrDefault(number, 0) + 1);
         }
 
-        // 두 번째 배열의 숫자가 나오면 개수 차감
+
         for (int number : numbers2) {
 
             if (!map.containsKey(number)) {
