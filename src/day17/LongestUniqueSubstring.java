@@ -1,5 +1,8 @@
 package day17;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class LongestUniqueSubstring {
 
     /*
@@ -65,6 +68,24 @@ public class LongestUniqueSubstring {
     public static int solution(String text) {
 
         // TODO: 직접 구현
-        return 0;
+        Set<Character> set = new HashSet<>();
+
+        int left = 0;
+        int maxLength = 0;
+
+        for(int right = 0; right < text.length(); right++){
+            char current = text.charAt(right);
+                while(set.contains(current)){
+                    set.remove(text.charAt(left));
+                    left++;
+                }
+                set.add(current);
+                int length = right - left + 1;
+                if(maxLength < length){
+                    maxLength = length;
+                }
+            }
+
+        return maxLength;
     }
 }
