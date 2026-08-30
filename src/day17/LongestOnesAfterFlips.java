@@ -63,6 +63,25 @@ public class LongestOnesAfterFlips {
     public static int solution(int[] numbers, int k) {
 
         // TODO: 직접 구현
-        return 0;
+        int left = 0;
+        int zeroCount = 0;
+        int maxLength = 0;
+
+        for(int right = 0; right < numbers.length; right++){
+            if(numbers[right] == 0){
+                zeroCount++;
+            }
+            while(zeroCount > k){
+                if(numbers[left] == 0){
+                    zeroCount--;
+                }
+                left++;
+            }
+            int length = right - left + 1;
+            if(maxLength < length){
+                maxLength = length;
+            }
+        }
+        return maxLength;
     }
 }
