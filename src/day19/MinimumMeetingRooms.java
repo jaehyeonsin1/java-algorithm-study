@@ -1,5 +1,7 @@
 package day19;
 
+import java.util.Arrays;
+
 public class MinimumMeetingRooms {
 
     /*
@@ -66,6 +68,34 @@ public class MinimumMeetingRooms {
     public static int solution(int[][] meetings) {
 
         // TODO: 직접 구현
-        return 0;
+        int[] startTimes = new int[meetings.length];
+        int[] endTimes = new int[meetings.length];
+
+        for(int i = 0; i < meetings.length; i++){
+            startTimes[i] = meetings[i][0];
+            endTimes[i] = meetings[i][1];
+        }
+
+        Arrays.sort(startTimes);
+        Arrays.sort(endTimes);
+
+        int startIndex = 0;
+        int endIndex = 0;
+        int currentRooms = 0;
+        int maxRooms = 0;
+
+        while(startIndex < meetings.length){
+            if(startTimes[startIndex] < endTimes[endIndex]){
+                currentRooms++;
+                startIndex++;
+                maxRooms = Math.max(maxRooms, currentRooms);
+            }else{
+                currentRooms--;
+                endIndex++;
+            }
+        }
+
+
+        return maxRooms;
     }
 }
