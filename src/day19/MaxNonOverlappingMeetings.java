@@ -1,5 +1,8 @@
 package day19;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 public class MaxNonOverlappingMeetings {
 
     /*
@@ -71,6 +74,19 @@ public class MaxNonOverlappingMeetings {
     public static int solution(int[][] meetings) {
 
         // TODO: 직접 구현
-        return 0;
+        int count = 0;
+        int lastEndTime = -1;
+        Arrays.sort(meetings, Comparator.comparingInt(a -> a[1]));
+        for(int i = 0; i < meetings.length; i++){
+            int startTime = meetings[i][0];
+            int endTime = meetings[i][1];
+
+            if(startTime >= lastEndTime){
+                count++;
+                lastEndTime = endTime;
+            }
+        }
+
+        return count;
     }
 }
