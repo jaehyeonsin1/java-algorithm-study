@@ -1,5 +1,7 @@
 package day20;
 
+import java.util.Arrays;
+
 public class KthLargestElement {
 
     /*
@@ -69,6 +71,7 @@ public class KthLargestElement {
     public static int solution(int[] numbers, int k) {
 
         // TODO: 직접 구현
-        return 0;
+        Arrays.sort(numbers);
+        return numbers[numbers.length - k];
     }
 }
