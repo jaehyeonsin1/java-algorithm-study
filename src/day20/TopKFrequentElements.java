@@ -1,6 +1,9 @@
 package day20;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 public class TopKFrequentElements {
 
@@ -68,6 +71,20 @@ public class TopKFrequentElements {
     public static int[] solution(int[] numbers, int k) {
 
         // TODO: 직접 구현
-        return new int[0];
+        Map<Integer, Integer> map = new HashMap<>();
+        for(int number : numbers){
+            map.put(number, map.getOrDefault(number, 0) +1 );
+        }
+        int[] result = new int[k];
+
+        PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> Integer.compare(map.get(b), map.get(a)));
+
+        queue.addAll(map.keySet());
+
+        for(int i = 0; i < k; i++){
+            result[i] = queue.poll();
+        }
+
+        return result;
     }
 }
