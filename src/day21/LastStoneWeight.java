@@ -1,5 +1,8 @@
 package day21;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 public class LastStoneWeight {
 
     /*
@@ -68,6 +71,22 @@ public class LastStoneWeight {
     public static int solution(int[] stones) {
 
         // TODO: 직접 구현
-        return 0;
+        PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> Integer.compare(b, a));
+
+        for(int stone : stones){
+            queue.offer(stone);
+        }
+
+        while(queue.size() > 1){
+            int a = queue.remove();
+            int b = queue.remove();
+
+            int remainingWeight = a - b;
+
+            if(remainingWeight != 0){
+                queue.offer(remainingWeight);
+            }
+        }
+        return queue.isEmpty() ? 0 : queue.poll();
     }
 }
