@@ -1,5 +1,8 @@
 package day21;
 
+import java.util.Arrays;
+import java.util.PriorityQueue;
+
 public class MinimumRopeConnectionCost {
 
     /*
@@ -67,6 +70,28 @@ public class MinimumRopeConnectionCost {
     public static int solution(int[] ropes) {
 
         // TODO: 직접 구현
-        return 0;
+        Arrays.sort(ropes);
+        PriorityQueue<Integer> queue = new PriorityQueue<>();
+
+        int maxPrice = 0;
+
+        if(ropes.length == 1){
+            return 0;
+        }else {
+            for(int rope : ropes){
+                queue.offer(rope);
+            }
+        }
+
+        while(queue.size() > 1){
+            int a = queue.poll();
+            int b = queue.poll();
+
+            int connected = a + b;
+            maxPrice += connected;
+            queue.offer(connected);
+        }
+
+        return maxPrice;
     }
 }
