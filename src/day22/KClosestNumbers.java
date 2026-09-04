@@ -1,6 +1,7 @@
 package day22;
 
 import java.util.Arrays;
+import java.util.PriorityQueue;
 
 public class KClosestNumbers {
 
@@ -73,6 +74,26 @@ public class KClosestNumbers {
     public static int[] solution(int[] numbers, int target, int k) {
 
         // TODO: 직접 구현
-        return new int[0];
+        PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> {
+            int diffA = Math.abs(a - target);
+            int diffB = Math.abs(b - target);
+            if(diffA != diffB){
+                return Integer.compare(diffB, diffA);
+            }
+
+            return Integer.compare(b, a);
+        });
+
+        for(int number : numbers){
+            queue.offer(number);
+
+            if(queue.size() > k){
+                queue.poll();
+            }
+        }
+
+
+
+        return queue.stream().mapToInt(Integer::intValue).toArray();
     }
 }
