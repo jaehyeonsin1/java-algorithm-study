@@ -1,6 +1,8 @@
 package day23;
 
 import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class PeakConcurrentUsers {
 
@@ -80,6 +82,31 @@ public class PeakConcurrentUsers {
     public static int[] solution(int[][] sessions) {
 
         // TODO: 직접 구현
-        return new int[0];
+        Map<Integer, Integer> timeline = new TreeMap<>();
+        for(int[] session : sessions){
+            int start = session[0];
+            int end = session[1];
+
+            timeline.put(start, timeline.getOrDefault(start, 0) + 1);
+            timeline.put(end, timeline.getOrDefault(end, 0) - 1);
+        }
+
+        int currentUsers = 0;
+        int maxUsers = 0;
+        int peakTime = 0;
+
+        for(Map.Entry<Integer, Integer> entry : timeline.entrySet()){
+            int time = entry.getKey();
+            int change = entry.getValue();
+
+            currentUsers += change;
+
+            if(maxUsers < currentUsers){
+                maxUsers = currentUsers;
+                peakTime = time;
+            }
+        }
+
+        return new int[]{maxUsers, peakTime};
     }
 }
