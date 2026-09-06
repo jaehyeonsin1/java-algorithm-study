@@ -1,6 +1,12 @@
 package day24;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class NumberOfIslands {
+
+    private static final int[] DR = {-1, 1, 0, 0};
+    private static final int[] DC = {0, 0, -1, 1};
 
     /*
     [DFS/BFS] 섬의 개수
@@ -78,7 +84,46 @@ public class NumberOfIslands {
 
     public static int solution(int[][] grid) {
 
-        // TODO: 직접 구현
-        return 0;
+        int rows = grid.length;
+        int columns = grid[0].length;
+        int islandCount = 0;
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (grid[row][column] == 0) {
+                    continue;
+                }
+
+                islandCount++;
+                sinkIsland(grid, row, column);
+            }
+        }
+
+        return islandCount;
+    }
+
+    private static void sinkIsland(int[][] grid, int startRow, int startColumn) {
+
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.offer(new int[]{startRow, startColumn});
+        grid[startRow][startColumn] = 0;
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+
+            for (int direction = 0; direction < 4; direction++) {
+                int nextRow = current[0] + DR[direction];
+                int nextColumn = current[1] + DC[direction];
+
+                if (nextRow < 0 || nextRow >= grid.length
+                        || nextColumn < 0 || nextColumn >= grid[0].length
+                        || grid[nextRow][nextColumn] == 0) {
+                    continue;
+                }
+
+                grid[nextRow][nextColumn] = 0;
+                queue.offer(new int[]{nextRow, nextColumn});
+            }
+        }
     }
 }
