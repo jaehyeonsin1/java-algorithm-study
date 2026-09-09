@@ -65,6 +65,37 @@ public class GeneratePermutations {
     public static List<List<Integer>> solution(int[] numbers) {
 
         // TODO: 직접 구현
-        return new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> current = new ArrayList<>();
+        boolean[] used = new boolean[numbers.length];
+
+        backtrack(numbers, used, current, result);
+
+        return result;
+    }
+    private static void backtrack(
+            int[] numbers,
+            boolean[] used,
+            List<Integer> current,
+            List<List<Integer>> result){
+
+        if (current.size() == numbers.length) {
+            result.add(new ArrayList<>(current));
+            return;
+        }
+
+        for (int i = 0; i < numbers.length; i++) {
+            if (used[i]) {
+                continue;
+            }
+
+            used[i] = true;
+            current.add(numbers[i]);
+
+            backtrack(numbers, used, current, result);
+
+            current.remove(current.size() - 1);
+            used[i] = false;
+        }
     }
 }
