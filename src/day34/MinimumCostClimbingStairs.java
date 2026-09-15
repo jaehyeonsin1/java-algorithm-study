@@ -69,6 +69,21 @@ public class MinimumCostClimbingStairs {
     public static int solution(int[] cost) {
 
         // TODO: 직접 구현
-        return -1;
+        int[] minimumCost = new int[cost.length];
+
+        minimumCost[0] = cost[0];
+        minimumCost[1] = cost[1];
+
+        for(int stair = 2; stair < cost.length; stair++){
+            int minimumPreviousCost = Math.min(
+                    minimumCost[stair - 1],
+                    minimumCost[stair - 2]
+            );
+
+            minimumCost[stair] = minimumPreviousCost + cost[stair];
+        }
+
+
+        return Math.min(minimumCost[cost.length - 1], minimumCost[cost.length - 2]);
     }
 }
