@@ -78,8 +78,25 @@ public class AdditionalBaseStations {
     }
 
     public static int solution(int n, int[] stations, int w) {
+        int additionalStations = 0;
+        int firstUncoveredApartment = 1;
+        int coverage = 2 * w + 1;
 
-        // TODO: 직접 구현
-        return 0;
+        for (int station : stations) {
+            int uncoveredApartments = station - w - firstUncoveredApartment;
+
+            if (uncoveredApartments > 0) {
+                additionalStations += (uncoveredApartments + coverage - 1) / coverage;
+            }
+
+            firstUncoveredApartment = station + w + 1;
+        }
+
+        if (firstUncoveredApartment <= n) {
+            int uncoveredApartments = n - firstUncoveredApartment + 1;
+            additionalStations += (uncoveredApartments + coverage - 1) / coverage;
+        }
+
+        return additionalStations;
     }
 }
