@@ -67,7 +67,26 @@ public class MinimumOperationsToOne {
 
     public static int solution(int n) {
 
-        // TODO: 직접 구현
-        return -1;
+        int[] minimumOperations = new int[n + 1];
+
+        for (int number = 2; number <= n; number++) {
+            minimumOperations[number] = minimumOperations[number - 1] + 1;
+
+            if (number % 2 == 0) {
+                minimumOperations[number] = Math.min(
+                        minimumOperations[number],
+                        minimumOperations[number / 2] + 1
+                );
+            }
+
+            if (number % 3 == 0) {
+                minimumOperations[number] = Math.min(
+                        minimumOperations[number],
+                        minimumOperations[number / 3] + 1
+                );
+            }
+        }
+
+        return minimumOperations[n];
     }
 }
