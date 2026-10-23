@@ -78,7 +78,19 @@ public class ZeroOneKnapsack {
 
     public static int solution(int[] weights, int[] values, int capacity) {
 
-        // TODO: 직접 구현
-        return -1;
+        int[] maximumValues = new int[capacity + 1];
+
+        for (int item = 0; item < weights.length; item++) {
+            for (int currentCapacity = capacity;
+                 currentCapacity >= weights[item];
+                 currentCapacity--) {
+                maximumValues[currentCapacity] = Math.max(
+                        maximumValues[currentCapacity],
+                        maximumValues[currentCapacity - weights[item]] + values[item]
+                );
+            }
+        }
+
+        return maximumValues[capacity];
     }
 }
