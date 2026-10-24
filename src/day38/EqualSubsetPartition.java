@@ -66,7 +66,30 @@ public class EqualSubsetPartition {
 
     public static boolean solution(int[] numbers) {
 
-        // TODO: 직접 구현
+        int totalSum = 0;
+
+        for (int number : numbers) {
+            totalSum += number;
+        }
+
+        if (totalSum % 2 != 0) {
+            return false;
+        }
+
+        int targetSum = totalSum / 2;
+        boolean[] reachable = new boolean[targetSum + 1];
+        reachable[0] = true;
+
+        for (int number : numbers) {
+            for (int sum = targetSum; sum >= number; sum--) {
+                reachable[sum] = reachable[sum] || reachable[sum - number];
+            }
+
+            if (reachable[targetSum]) {
+                return true;
+            }
+        }
+
         return false;
     }
 }
