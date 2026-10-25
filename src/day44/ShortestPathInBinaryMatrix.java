@@ -1,5 +1,8 @@
 package day44;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class ShortestPathInBinaryMatrix {
 
     /*
@@ -86,7 +89,43 @@ public class ShortestPathInBinaryMatrix {
 
     public static int solution(int[][] grid) {
 
-        // TODO: 직접 구현
-        return 0;
+        int n = grid.length;
+        Queue<int[]> queue = new ArrayDeque<>();
+        int[][] directions = {
+                {-1, -1}, {-1, 0}, {-1, 1},
+                {0, -1},           {0, 1},
+                {1, -1},  {1, 0},  {1, 1}
+        };
+
+        if(grid[0][0] == 1 || grid[n - 1][n - 1] == 1){
+            return -1;
+        }
+
+        queue.offer(new int[]{0, 0, 1});
+        grid[0][0] = 1;
+
+        while(!queue.isEmpty()){
+            int[] current = queue.poll();
+            int row = current[0];
+            int column = current[1];
+            int distance = current[2];
+
+            if(row == n - 1 && column == n - 1){
+                return distance;
+            }
+
+            for(int[] direction : directions){
+                int nextRow = row + direction[0];
+                int nextColumn = column + direction[1];
+
+                if((nextRow >= 0 && nextRow < n)
+                        && (nextColumn >= 0 && nextColumn < n)
+                        && grid[nextRow][nextColumn] == 0){
+                    grid[nextRow][nextColumn] = 1;
+                    queue.offer(new int[]{nextRow, nextColumn, distance + 1});
+                }
+            }
+        }
+        return -1;
     }
 }
