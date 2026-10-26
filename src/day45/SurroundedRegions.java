@@ -1,6 +1,8 @@
 package day45;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Queue;
 
 public class SurroundedRegions {
 
@@ -91,6 +93,62 @@ public class SurroundedRegions {
 
     public static void solution(char[][] board) {
 
-        // TODO: 직접 구현
+        int rows = board.length;
+        int columns = board[0].length;
+        Queue<int[]> queue = new ArrayDeque<>();
+
+        for (int row = 0; row < rows; row++) {
+            markAsSafe(board, row, 0, queue);
+            markAsSafe(board, row, columns - 1, queue);
+        }
+
+        for (int column = 0; column < columns; column++) {
+            markAsSafe(board, 0, column, queue);
+            markAsSafe(board, rows - 1, column, queue);
+        }
+
+        int[][] directions = {
+                {-1, 0},
+                {1, 0},
+                {0, -1},
+                {0, 1}
+        };
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+
+            for (int[] direction : directions) {
+                int nextRow = current[0] + direction[0];
+                int nextColumn = current[1] + direction[1];
+
+                if (nextRow >= 0 && nextRow < rows
+                        && nextColumn >= 0 && nextColumn < columns
+                        && board[nextRow][nextColumn] == 'O') {
+                    markAsSafe(board, nextRow, nextColumn, queue);
+                }
+            }
+        }
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (board[row][column] == 'O') {
+                    board[row][column] = 'X';
+                } else if (board[row][column] == '#') {
+                    board[row][column] = 'O';
+                }
+            }
+        }
+    }
+
+    private static void markAsSafe(
+            char[][] board,
+            int row,
+            int column,
+            Queue<int[]> queue
+    ) {
+        if (board[row][column] == 'O') {
+            board[row][column] = '#';
+            queue.offer(new int[]{row, column});
+        }
     }
 }
