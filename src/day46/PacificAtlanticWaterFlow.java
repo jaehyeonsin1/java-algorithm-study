@@ -1,7 +1,9 @@
 package day46;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class PacificAtlanticWaterFlow {
 
@@ -75,7 +77,88 @@ public class PacificAtlanticWaterFlow {
 
     public static List<List<Integer>> solution(int[][] heights) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        int rows = heights.length;
+        int columns = heights[0].length;
+
+        boolean[][] pacific = new boolean[rows][columns];
+        boolean[][] atlantic = new boolean[rows][columns];
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        markReachableFromOcean(heights, pacific, true);
+        markReachableFromOcean(heights, atlantic, false);
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (pacific[row][column] && atlantic[row][column]) {
+                    List<Integer> coordinate = new ArrayList<>(2);
+                    coordinate.add(row);
+                    coordinate.add(column);
+                    result.add(coordinate);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static void markReachableFromOcean(
+            int[][] heights,
+            boolean[][] reachable,
+            boolean isPacific
+    ) {
+        int rows = heights.length;
+        int columns = heights[0].length;
+        Queue<int[]> queue = new ArrayDeque<>();
+
+        if (isPacific) {
+            for (int column = 0; column < columns; column++) {
+                addIfNotVisited(0, column, reachable, queue);
+            }
+            for (int row = 0; row < rows; row++) {
+                addIfNotVisited(row, 0, reachable, queue);
+            }
+        } else {
+            for (int column = 0; column < columns; column++) {
+                addIfNotVisited(rows - 1, column, reachable, queue);
+            }
+            for (int row = 0; row < rows; row++) {
+                addIfNotVisited(row, columns - 1, reachable, queue);
+            }
+        }
+
+        int[][] directions = {
+                {-1, 0}, {1, 0}, {0, -1}, {0, 1}
+        };
+
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int row = current[0];
+            int column = current[1];
+
+            for (int[] direction : directions) {
+                int nextRow = row + direction[0];
+                int nextColumn = column + direction[1];
+
+                if (nextRow >= 0 && nextRow < rows
+                        && nextColumn >= 0 && nextColumn < columns
+                        && !reachable[nextRow][nextColumn]
+                        && heights[nextRow][nextColumn] >= heights[row][column]) {
+                    addIfNotVisited(nextRow, nextColumn, reachable, queue);
+                }
+            }
+        }
+    }
+
+    private static void addIfNotVisited(
+            int row,
+            int column,
+            boolean[][] reachable,
+            Queue<int[]> queue
+    ) {
+        if (!reachable[row][column]) {
+            reachable[row][column] = true;
+            queue.offer(new int[]{row, column});
+        }
     }
 }
