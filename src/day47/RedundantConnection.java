@@ -71,7 +71,49 @@ public class RedundantConnection {
 
     public static int[] solution(int[][] edges) {
 
-        // TODO: 직접 구현
+        int[] parent = new int[edges.length + 1];
+        int[] rank = new int[edges.length + 1];
+
+        for (int node = 1; node < parent.length; node++) {
+            parent[node] = node;
+        }
+
+        for (int[] edge : edges) {
+            if (!union(edge[0], edge[1], parent, rank)) {
+                return edge;
+            }
+        }
+
         return new int[0];
+    }
+
+    private static boolean union(int nodeA, int nodeB, int[] parent, int[] rank) {
+
+        int rootA = find(nodeA, parent);
+        int rootB = find(nodeB, parent);
+
+        if (rootA == rootB) {
+            return false;
+        }
+
+        if (rank[rootA] < rank[rootB]) {
+            parent[rootA] = rootB;
+        } else if (rank[rootA] > rank[rootB]) {
+            parent[rootB] = rootA;
+        } else {
+            parent[rootB] = rootA;
+            rank[rootA]++;
+        }
+
+        return true;
+    }
+
+    private static int find(int node, int[] parent) {
+
+        if (parent[node] != node) {
+            parent[node] = find(parent[node], parent);
+        }
+
+        return parent[node];
     }
 }
