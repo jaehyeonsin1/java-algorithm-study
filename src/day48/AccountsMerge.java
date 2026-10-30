@@ -2,7 +2,12 @@ package day48;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class AccountsMerge {
 
@@ -88,7 +93,74 @@ public class AccountsMerge {
 
     public static List<List<String>> solution(List<List<String>> accounts) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        int accountCount = accounts.size();
+        int[] parent = new int[accountCount];
+        int[] rank = new int[accountCount];
+
+        for (int accountIndex = 0; accountIndex < accountCount; accountIndex++) {
+            parent[accountIndex] = accountIndex;
+        }
+
+        Map<String, Integer> emailOwner = new HashMap<>();
+
+        for (int accountIndex = 0; accountIndex < accountCount; accountIndex++) {
+            List<String> account = accounts.get(accountIndex);
+
+            for (int emailIndex = 1; emailIndex < account.size(); emailIndex++) {
+                String email = account.get(emailIndex);
+                Integer previousOwner = emailOwner.putIfAbsent(email, accountIndex);
+
+                if (previousOwner != null) {
+                    union(accountIndex, previousOwner, parent, rank);
+                }
+            }
+        }
+
+        Map<Integer, Set<String>> emailsByRoot = new LinkedHashMap<>();
+
+        for (int accountIndex = 0; accountIndex < accountCount; accountIndex++) {
+            int root = find(accountIndex, parent);
+            Set<String> emails = emailsByRoot.computeIfAbsent(root, key -> new TreeSet<>());
+            emails.addAll(accounts.get(accountIndex).subList(1, accounts.get(accountIndex).size()));
+        }
+
+        List<List<String>> result = new ArrayList<>();
+
+        for (Map.Entry<Integer, Set<String>> entry : emailsByRoot.entrySet()) {
+            List<String> mergedAccount = new ArrayList<>();
+            mergedAccount.add(accounts.get(entry.getKey()).get(0));
+            mergedAccount.addAll(entry.getValue());
+            result.add(mergedAccount);
+        }
+
+        return result;
+    }
+
+    private static void union(int accountA, int accountB, int[] parent, int[] rank) {
+
+        int rootA = find(accountA, parent);
+        int rootB = find(accountB, parent);
+
+        if (rootA == rootB) {
+            return;
+        }
+
+        if (rank[rootA] < rank[rootB]) {
+            parent[rootA] = rootB;
+        } else if (rank[rootA] > rank[rootB]) {
+            parent[rootB] = rootA;
+        } else {
+            parent[rootB] = rootA;
+            rank[rootA]++;
+        }
+    }
+
+    private static int find(int account, int[] parent) {
+
+        if (parent[account] != account) {
+            parent[account] = find(parent[account], parent);
+        }
+
+        return parent[account];
     }
 }
