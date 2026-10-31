@@ -2,7 +2,11 @@ package day49;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class EvaluateDivision {
 
@@ -83,7 +87,73 @@ public class EvaluateDivision {
                                     double[] values,
                                     List<List<String>> queries) {
 
-        // TODO: 직접 구현
-        return new double[0];
+        Map<String, Map<String, Double>> graph = new HashMap<>();
+
+        for (int index = 0; index < equations.size(); index++) {
+            String numerator = equations.get(index).get(0);
+            String denominator = equations.get(index).get(1);
+            double value = values[index];
+
+            graph.computeIfAbsent(numerator, key -> new HashMap<>())
+                    .put(denominator, value);
+            graph.computeIfAbsent(denominator, key -> new HashMap<>())
+                    .put(numerator, 1.0 / value);
+        }
+
+        double[] result = new double[queries.size()];
+
+        for (int index = 0; index < queries.size(); index++) {
+            String numerator = queries.get(index).get(0);
+            String denominator = queries.get(index).get(1);
+
+            if (!graph.containsKey(numerator) || !graph.containsKey(denominator)) {
+                result[index] = -1.0;
+                continue;
+            }
+
+            result[index] = calculate(
+                    numerator,
+                    denominator,
+                    1.0,
+                    graph,
+                    new HashSet<>()
+            );
+        }
+
+        return result;
+    }
+
+    private static double calculate(
+            String current,
+            String target,
+            double value,
+            Map<String, Map<String, Double>> graph,
+            Set<String> visited
+    ) {
+        if (current.equals(target)) {
+            return value;
+        }
+
+        visited.add(current);
+
+        for (Map.Entry<String, Double> neighbor : graph.get(current).entrySet()) {
+            if (visited.contains(neighbor.getKey())) {
+                continue;
+            }
+
+            double result = calculate(
+                    neighbor.getKey(),
+                    target,
+                    value * neighbor.getValue(),
+                    graph,
+                    visited
+            );
+
+            if (result != -1.0) {
+                return result;
+            }
+        }
+
+        return -1.0;
     }
 }
