@@ -2,7 +2,11 @@ package day50;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 public class ReconstructItinerary {
 
@@ -84,7 +88,33 @@ public class ReconstructItinerary {
 
     public static List<String> solution(List<List<String>> tickets) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        Map<String, PriorityQueue<String>> graph = new HashMap<>();
+
+        for (List<String> ticket : tickets) {
+            String departure = ticket.get(0);
+            String arrival = ticket.get(1);
+
+            graph.computeIfAbsent(departure, key -> new PriorityQueue<>())
+                    .offer(arrival);
+        }
+
+        LinkedList<String> itinerary = new LinkedList<>();
+        buildItinerary("JFK", graph, itinerary);
+
+        return itinerary;
+    }
+
+    private static void buildItinerary(
+            String airport,
+            Map<String, PriorityQueue<String>> graph,
+            LinkedList<String> itinerary
+    ) {
+        PriorityQueue<String> arrivals = graph.get(airport);
+
+        while (arrivals != null && !arrivals.isEmpty()) {
+            buildItinerary(arrivals.poll(), graph, itinerary);
+        }
+
+        itinerary.addFirst(airport);
     }
 }
