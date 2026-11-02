@@ -1,7 +1,9 @@
 package day51;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class BinaryTreeLevelOrderTraversal {
 
@@ -68,8 +70,35 @@ public class BinaryTreeLevelOrderTraversal {
 
     public static List<List<Integer>> solution(TreeNode root) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+
+        if (root == null) {
+            return result;
+        }
+
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<Integer> level = new ArrayList<>(levelSize);
+
+            for (int index = 0; index < levelSize; index++) {
+                TreeNode node = queue.poll();
+                level.add(node.value);
+
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+
+            result.add(level);
+        }
+
+        return result;
     }
 
     static class TreeNode {
