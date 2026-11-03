@@ -1,5 +1,8 @@
 package day52;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class ValidateBinarySearchTree {
 
     /*
@@ -75,8 +78,43 @@ public class ValidateBinarySearchTree {
 
     public static boolean solution(TreeNode root) {
 
-        // TODO: 직접 구현
-        return false;
+        if (root == null) {
+            return true;
+        }
+
+        Deque<NodeRange> stack = new ArrayDeque<>();
+        stack.push(new NodeRange(root, Long.MIN_VALUE, Long.MAX_VALUE));
+
+        while (!stack.isEmpty()) {
+            NodeRange current = stack.pop();
+            TreeNode node = current.node;
+
+            if (node.value <= current.minimum || node.value >= current.maximum) {
+                return false;
+            }
+
+            if (node.right != null) {
+                stack.push(new NodeRange(node.right, node.value, current.maximum));
+            }
+            if (node.left != null) {
+                stack.push(new NodeRange(node.left, current.minimum, node.value));
+            }
+        }
+
+        return true;
+    }
+
+    private static class NodeRange {
+
+        TreeNode node;
+        long minimum;
+        long maximum;
+
+        NodeRange(TreeNode node, long minimum, long maximum) {
+            this.node = node;
+            this.minimum = minimum;
+            this.maximum = maximum;
+        }
     }
 
     static class TreeNode {
