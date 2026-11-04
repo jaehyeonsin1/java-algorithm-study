@@ -51,6 +51,8 @@ public class DiameterOfBinaryTree {
     -100 <= node.value <= 100
     */
 
+    static int maxDiameter;
+
     public static void main(String[] args) {
 
         TreeNode root = new TreeNode(1);
@@ -67,7 +69,13 @@ public class DiameterOfBinaryTree {
     public static int solution(TreeNode root) {
 
         // TODO: 직접 구현
-        return 0;
+        if(root == null){
+            return 0;
+        }
+
+        maxDiameter = 0;
+        getHeight(root);
+        return maxDiameter;
     }
 
     static class TreeNode {
@@ -79,5 +87,18 @@ public class DiameterOfBinaryTree {
         TreeNode(int value) {
             this.value = value;
         }
+    }
+
+    static int getHeight(TreeNode node){
+        if(node == null){
+            return 0;
+        }
+
+        int leftHeight = getHeight(node.left);
+        int rightHeight = getHeight(node.right);
+
+        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+        return Math.max(leftHeight, rightHeight) + 1;
+
     }
 }
