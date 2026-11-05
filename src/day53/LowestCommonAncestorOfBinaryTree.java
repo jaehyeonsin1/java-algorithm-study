@@ -81,8 +81,18 @@ public class LowestCommonAncestorOfBinaryTree {
 
     public static TreeNode solution(TreeNode root, TreeNode p, TreeNode q) {
 
-        // TODO: 직접 구현
-        return null;
+        if (root == null || root == p || root == q) {
+            return root;
+        }
+
+        TreeNode leftResult = solution(root.left, p, q);
+        TreeNode rightResult = solution(root.right, p, q);
+
+        if (leftResult != null && rightResult != null) {
+            return root;
+        }
+
+        return leftResult != null ? leftResult : rightResult;
     }
 
     static class TreeNode {
