@@ -1,7 +1,9 @@
 package day54;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class BinaryTreeRightSideView {
 
@@ -68,8 +70,35 @@ public class BinaryTreeRightSideView {
 
     public static List<Integer> solution(TreeNode root) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
+
+        if (root == null) {
+            return result;
+        }
+
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+
+            for (int index = 0; index < levelSize; index++) {
+                TreeNode node = queue.poll();
+
+                if (index == levelSize - 1) {
+                    result.add(node.value);
+                }
+
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+        }
+
+        return result;
     }
 
     static class TreeNode {
