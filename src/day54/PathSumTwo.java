@@ -80,8 +80,33 @@ public class PathSumTwo {
 
     public static List<List<Integer>> solution(TreeNode root, int targetSum) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        List<List<Integer>> result = new ArrayList<>();
+        findPaths(root, targetSum, new ArrayList<>(), result);
+
+        return result;
+    }
+
+    private static void findPaths(
+            TreeNode node,
+            int remainingSum,
+            List<Integer> path,
+            List<List<Integer>> result
+    ) {
+        if (node == null) {
+            return;
+        }
+
+        path.add(node.value);
+
+        if (node.left == null && node.right == null && remainingSum == node.value) {
+            result.add(new ArrayList<>(path));
+        } else {
+            int nextRemainingSum = remainingSum - node.value;
+            findPaths(node.left, nextRemainingSum, path, result);
+            findPaths(node.right, nextRemainingSum, path, result);
+        }
+
+        path.remove(path.size() - 1);
     }
 
     static class TreeNode {
