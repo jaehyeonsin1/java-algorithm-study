@@ -1,5 +1,8 @@
 package day55;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class KthSmallestElementInBST {
 
     /*
@@ -66,8 +69,25 @@ public class KthSmallestElementInBST {
 
     public static int solution(TreeNode root, int k) {
 
-        // TODO: 직접 구현
-        return 0;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode current = root;
+
+        while (current != null || !stack.isEmpty()) {
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+
+            current = stack.pop();
+
+            if (--k == 0) {
+                return current.value;
+            }
+
+            current = current.right;
+        }
+
+        throw new IllegalArgumentException("k는 트리의 노드 수 이하여야 합니다.");
     }
 
     static class TreeNode {
