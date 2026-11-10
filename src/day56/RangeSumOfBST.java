@@ -1,5 +1,8 @@
 package day56;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class RangeSumOfBST {
 
     /*
@@ -67,8 +70,36 @@ public class RangeSumOfBST {
 
     public static int solution(TreeNode root, int low, int high) {
 
-        // TODO: 직접 구현
-        return 0;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        stack.push(root);
+
+        int sum = 0;
+
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+
+            if (node.value < low) {
+                if (node.right != null) {
+                    stack.push(node.right);
+                }
+            } else if (node.value > high) {
+                if (node.left != null) {
+                    stack.push(node.left);
+                }
+            } else {
+                sum += node.value;
+
+                if (node.left != null) {
+                    stack.push(node.left);
+                }
+
+                if (node.right != null) {
+                    stack.push(node.right);
+                }
+            }
+        }
+
+        return sum;
     }
 
     static class TreeNode {
