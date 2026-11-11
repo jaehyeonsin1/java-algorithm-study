@@ -77,7 +77,44 @@ public class DeleteNodeInBST {
 
     public static TreeNode solution(TreeNode root, int key) {
 
-        // TODO: 직접 구현
+        TreeNode parent = null;
+        TreeNode node = root;
+
+        while (node != null && node.value != key) {
+            parent = node;
+            node = key < node.value ? node.left : node.right;
+        }
+
+        if (node == null) {
+            return root;
+        }
+
+        if (node.left != null && node.right != null) {
+            TreeNode successorParent = node;
+            TreeNode successor = node.right;
+
+            while (successor.left != null) {
+                successorParent = successor;
+                successor = successor.left;
+            }
+
+            node.value = successor.value;
+            parent = successorParent;
+            node = successor;
+        }
+
+        TreeNode child = node.left != null ? node.left : node.right;
+
+        if (parent == null) {
+            return child;
+        }
+
+        if (parent.left == node) {
+            parent.left = child;
+        } else {
+            parent.right = child;
+        }
+
         return root;
     }
 
