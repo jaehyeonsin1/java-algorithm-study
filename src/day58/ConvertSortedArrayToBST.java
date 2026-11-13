@@ -67,8 +67,22 @@ public class ConvertSortedArrayToBST {
 
     public static TreeNode solution(int[] numbers) {
 
-        // TODO: 직접 구현
-        return null;
+        return buildTree(numbers, 0, numbers.length - 1);
+    }
+
+    private static TreeNode buildTree(int[] numbers, int left, int right) {
+
+        if (left > right) {
+            return null;
+        }
+
+        int middle = left + (right - left) / 2;
+        TreeNode node = new TreeNode(numbers[middle]);
+
+        node.left = buildTree(numbers, left, middle - 1);
+        node.right = buildTree(numbers, middle + 1, right);
+
+        return node;
     }
 
     static class TreeNode {
