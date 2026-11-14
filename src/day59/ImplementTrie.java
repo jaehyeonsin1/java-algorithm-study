@@ -65,26 +65,61 @@ public class ImplementTrie {
 
     static class Trie {
 
+        private final TrieNode root;
+
         Trie() {
 
-            // TODO: 직접 구현
+            root = new TrieNode();
         }
 
         public void insert(String word) {
 
-            // TODO: 직접 구현
+            TrieNode node = root;
+
+            for (char character : word.toCharArray()) {
+                int index = character - 'a';
+
+                if (node.children[index] == null) {
+                    node.children[index] = new TrieNode();
+                }
+
+                node = node.children[index];
+            }
+
+            node.wordEnd = true;
         }
 
         public boolean search(String word) {
 
-            // TODO: 직접 구현
-            return false;
+            TrieNode node = findNode(word);
+
+            return node != null && node.wordEnd;
         }
 
         public boolean startsWith(String prefix) {
 
-            // TODO: 직접 구현
-            return false;
+            return findNode(prefix) != null;
+        }
+
+        private TrieNode findNode(String text) {
+
+            TrieNode node = root;
+
+            for (char character : text.toCharArray()) {
+                node = node.children[character - 'a'];
+
+                if (node == null) {
+                    return null;
+                }
+            }
+
+            return node;
+        }
+
+        static class TrieNode {
+
+            TrieNode[] children = new TrieNode[26];
+            boolean wordEnd;
         }
     }
 }
