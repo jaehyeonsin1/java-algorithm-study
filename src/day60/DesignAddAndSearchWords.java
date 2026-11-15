@@ -72,20 +72,62 @@ public class DesignAddAndSearchWords {
 
     static class WordDictionary {
 
+        private final TrieNode root;
+
         WordDictionary() {
 
-            // TODO: 직접 구현
+            root = new TrieNode();
         }
 
         public void addWord(String word) {
 
-            // TODO: 직접 구현
+            TrieNode node = root;
+
+            for (char character : word.toCharArray()) {
+                int index = character - 'a';
+
+                if (node.children[index] == null) {
+                    node.children[index] = new TrieNode();
+                }
+
+                node = node.children[index];
+            }
+
+            node.wordEnd = true;
         }
 
         public boolean search(String word) {
 
-            // TODO: 직접 구현
-            return false;
+            return search(word, 0, root);
+        }
+
+        private boolean search(String word, int index, TrieNode node) {
+
+            if (index == word.length()) {
+                return node.wordEnd;
+            }
+
+            char character = word.charAt(index);
+
+            if (character == '.') {
+                for (TrieNode child : node.children) {
+                    if (child != null && search(word, index + 1, child)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            TrieNode child = node.children[character - 'a'];
+
+            return child != null && search(word, index + 1, child);
+        }
+
+        static class TrieNode {
+
+            TrieNode[] children = new TrieNode[26];
+            boolean wordEnd;
         }
     }
 }
