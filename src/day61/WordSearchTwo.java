@@ -77,7 +77,74 @@ public class WordSearchTwo {
 
     public static List<String> solution(char[][] board, String[] words) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        TrieNode root = new TrieNode();
+
+        for (String word : words) {
+            insert(root, word);
+        }
+
+        List<String> result = new ArrayList<>();
+
+        for (int row = 0; row < board.length; row++) {
+            for (int column = 0; column < board[0].length; column++) {
+                search(board, row, column, root, result);
+            }
+        }
+
+        return result;
+    }
+
+    private static void insert(TrieNode root, String word) {
+
+        TrieNode node = root;
+
+        for (char character : word.toCharArray()) {
+            int index = character - 'a';
+
+            if (node.children[index] == null) {
+                node.children[index] = new TrieNode();
+            }
+
+            node = node.children[index];
+        }
+
+        node.word = word;
+    }
+
+    private static void search(char[][] board, int row, int column,
+                               TrieNode parent, List<String> result) {
+
+        if (row < 0 || row >= board.length
+                || column < 0 || column >= board[0].length
+                || board[row][column] == '#') {
+            return;
+        }
+
+        char character = board[row][column];
+        TrieNode node = parent.children[character - 'a'];
+
+        if (node == null) {
+            return;
+        }
+
+        if (node.word != null) {
+            result.add(node.word);
+            node.word = null;
+        }
+
+        board[row][column] = '#';
+
+        search(board, row - 1, column, node, result);
+        search(board, row + 1, column, node, result);
+        search(board, row, column - 1, node, result);
+        search(board, row, column + 1, node, result);
+
+        board[row][column] = character;
+    }
+
+    static class TrieNode {
+
+        TrieNode[] children = new TrieNode[26];
+        String word;
     }
 }
