@@ -1,5 +1,8 @@
 package day62;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class NumberOfIslands {
 
     /*
@@ -59,7 +62,47 @@ public class NumberOfIslands {
 
     public static int solution(char[][] grid) {
 
-        // TODO: 직접 구현
-        return 0;
+        int rows = grid.length;
+        int columns = grid[0].length;
+        int islandCount = 0;
+
+        int[] rowDirections = {-1, 1, 0, 0};
+        int[] columnDirections = {0, 0, -1, 1};
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (grid[row][column] == '0') {
+                    continue;
+                }
+
+                islandCount++;
+
+                Deque<Integer> stack = new ArrayDeque<>();
+                stack.push(row * columns + column);
+                grid[row][column] = '0';
+
+                while (!stack.isEmpty()) {
+                    int position = stack.pop();
+                    int currentRow = position / columns;
+                    int currentColumn = position % columns;
+
+                    for (int direction = 0; direction < 4; direction++) {
+                        int nextRow = currentRow + rowDirections[direction];
+                        int nextColumn = currentColumn + columnDirections[direction];
+
+                        if (nextRow < 0 || nextRow >= rows
+                                || nextColumn < 0 || nextColumn >= columns
+                                || grid[nextRow][nextColumn] == '0') {
+                            continue;
+                        }
+
+                        grid[nextRow][nextColumn] = '0';
+                        stack.push(nextRow * columns + nextColumn);
+                    }
+                }
+            }
+        }
+
+        return islandCount;
     }
 }
