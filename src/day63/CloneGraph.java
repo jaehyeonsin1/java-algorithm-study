@@ -1,7 +1,11 @@
 package day63;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 public class CloneGraph {
 
@@ -85,8 +89,31 @@ public class CloneGraph {
 
     public static Node solution(Node node) {
 
-        // TODO: 직접 구현
-        return null;
+        if (node == null) {
+            return null;
+        }
+
+        Map<Node, Node> copies = new HashMap<>();
+        Queue<Node> queue = new ArrayDeque<>();
+
+        copies.put(node, new Node(node.val));
+        queue.offer(node);
+
+        while (!queue.isEmpty()) {
+            Node original = queue.poll();
+            Node copy = copies.get(original);
+
+            for (Node neighbor : original.neighbors) {
+                if (!copies.containsKey(neighbor)) {
+                    copies.put(neighbor, new Node(neighbor.val));
+                    queue.offer(neighbor);
+                }
+
+                copy.neighbors.add(copies.get(neighbor));
+            }
+        }
+
+        return copies.get(node);
     }
 
     static class Node {
