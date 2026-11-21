@@ -1,6 +1,8 @@
 package day65;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public class PacificAtlanticWaterFlow {
@@ -71,7 +73,78 @@ public class PacificAtlanticWaterFlow {
 
     public static List<List<Integer>> solution(int[][] heights) {
 
-        // TODO: 직접 구현
-        return new ArrayList<>();
+        int rows = heights.length;
+        int columns = heights[0].length;
+
+        boolean[][] pacificReachable = new boolean[rows][columns];
+        boolean[][] atlanticReachable = new boolean[rows][columns];
+        Deque<Integer> pacificQueue = new ArrayDeque<>();
+        Deque<Integer> atlanticQueue = new ArrayDeque<>();
+
+        for (int row = 0; row < rows; row++) {
+            addOceanBorder(row, 0, columns, pacificReachable, pacificQueue);
+            addOceanBorder(row, columns - 1, columns, atlanticReachable, atlanticQueue);
+        }
+
+        for (int column = 0; column < columns; column++) {
+            addOceanBorder(0, column, columns, pacificReachable, pacificQueue);
+            addOceanBorder(rows - 1, column, columns, atlanticReachable, atlanticQueue);
+        }
+
+        searchFromOcean(heights, pacificReachable, pacificQueue);
+        searchFromOcean(heights, atlanticReachable, atlanticQueue);
+
+        List<List<Integer>> result = new ArrayList<>();
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (pacificReachable[row][column] && atlanticReachable[row][column]) {
+                    result.add(List.of(row, column));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static void addOceanBorder(int row, int column, int columns,
+                                       boolean[][] reachable, Deque<Integer> queue) {
+
+        if (reachable[row][column]) {
+            return;
+        }
+
+        reachable[row][column] = true;
+        queue.offer(row * columns + column);
+    }
+
+    private static void searchFromOcean(int[][] heights, boolean[][] reachable,
+                                        Deque<Integer> queue) {
+
+        int rows = heights.length;
+        int columns = heights[0].length;
+        int[] rowDirections = {-1, 1, 0, 0};
+        int[] columnDirections = {0, 0, -1, 1};
+
+        while (!queue.isEmpty()) {
+            int position = queue.poll();
+            int currentRow = position / columns;
+            int currentColumn = position % columns;
+
+            for (int direction = 0; direction < 4; direction++) {
+                int nextRow = currentRow + rowDirections[direction];
+                int nextColumn = currentColumn + columnDirections[direction];
+
+                if (nextRow < 0 || nextRow >= rows
+                        || nextColumn < 0 || nextColumn >= columns
+                        || reachable[nextRow][nextColumn]
+                        || heights[nextRow][nextColumn] < heights[currentRow][currentColumn]) {
+                    continue;
+                }
+
+                reachable[nextRow][nextColumn] = true;
+                queue.offer(nextRow * columns + nextColumn);
+            }
+        }
     }
 }
