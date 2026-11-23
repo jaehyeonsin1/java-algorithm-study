@@ -1,6 +1,8 @@
 package day66;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 
 public class SurroundedRegions {
 
@@ -69,6 +71,62 @@ public class SurroundedRegions {
 
     public static void solution(char[][] board) {
 
-        // TODO: 직접 구현
+        int rows = board.length;
+        int columns = board[0].length;
+        Deque<Integer> queue = new ArrayDeque<>();
+
+        for (int row = 0; row < rows; row++) {
+            addBorderCell(board, row, 0, columns, queue);
+            addBorderCell(board, row, columns - 1, columns, queue);
+        }
+
+        for (int column = 0; column < columns; column++) {
+            addBorderCell(board, 0, column, columns, queue);
+            addBorderCell(board, rows - 1, column, columns, queue);
+        }
+
+        int[] rowDirections = {-1, 1, 0, 0};
+        int[] columnDirections = {0, 0, -1, 1};
+
+        while (!queue.isEmpty()) {
+            int position = queue.poll();
+            int currentRow = position / columns;
+            int currentColumn = position % columns;
+
+            for (int direction = 0; direction < 4; direction++) {
+                int nextRow = currentRow + rowDirections[direction];
+                int nextColumn = currentColumn + columnDirections[direction];
+
+                if (nextRow < 0 || nextRow >= rows
+                        || nextColumn < 0 || nextColumn >= columns
+                        || board[nextRow][nextColumn] != 'O') {
+                    continue;
+                }
+
+                board[nextRow][nextColumn] = 'S';
+                queue.offer(nextRow * columns + nextColumn);
+            }
+        }
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (board[row][column] == 'O') {
+                    board[row][column] = 'X';
+                } else if (board[row][column] == 'S') {
+                    board[row][column] = 'O';
+                }
+            }
+        }
+    }
+
+    private static void addBorderCell(char[][] board, int row, int column,
+                                      int columns, Deque<Integer> queue) {
+
+        if (board[row][column] != 'O') {
+            return;
+        }
+
+        board[row][column] = 'S';
+        queue.offer(row * columns + column);
     }
 }
