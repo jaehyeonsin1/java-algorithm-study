@@ -1,5 +1,8 @@
 package day67;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class RottingOranges {
 
     /*
@@ -77,7 +80,52 @@ public class RottingOranges {
 
     public static int solution(int[][] grid) {
 
-        // TODO: 직접 구현
-        return 0;
+        int rows = grid.length;
+        int columns = grid[0].length;
+        int freshOranges = 0;
+        Deque<Integer> queue = new ArrayDeque<>();
+
+        for (int row = 0; row < rows; row++) {
+            for (int column = 0; column < columns; column++) {
+                if (grid[row][column] == 1) {
+                    freshOranges++;
+                } else if (grid[row][column] == 2) {
+                    queue.offer(row * columns + column);
+                }
+            }
+        }
+
+        int minutes = 0;
+        int[] rowDirections = {-1, 1, 0, 0};
+        int[] columnDirections = {0, 0, -1, 1};
+
+        while (freshOranges > 0 && !queue.isEmpty()) {
+            int rottenOranges = queue.size();
+
+            for (int orange = 0; orange < rottenOranges; orange++) {
+                int position = queue.poll();
+                int currentRow = position / columns;
+                int currentColumn = position % columns;
+
+                for (int direction = 0; direction < 4; direction++) {
+                    int nextRow = currentRow + rowDirections[direction];
+                    int nextColumn = currentColumn + columnDirections[direction];
+
+                    if (nextRow < 0 || nextRow >= rows
+                            || nextColumn < 0 || nextColumn >= columns
+                            || grid[nextRow][nextColumn] != 1) {
+                        continue;
+                    }
+
+                    grid[nextRow][nextColumn] = 2;
+                    freshOranges--;
+                    queue.offer(nextRow * columns + nextColumn);
+                }
+            }
+
+            minutes++;
+        }
+
+        return freshOranges == 0 ? minutes : -1;
     }
 }
