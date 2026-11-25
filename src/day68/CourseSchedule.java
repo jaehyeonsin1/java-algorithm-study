@@ -1,5 +1,10 @@
 package day68;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 public class CourseSchedule {
 
     /*
@@ -64,7 +69,44 @@ public class CourseSchedule {
 
     public static boolean solution(int numCourses, int[][] prerequisites) {
 
-        // TODO: 직접 구현
-        return false;
+        List<List<Integer>> nextCourses = new ArrayList<>();
+        int[] indegrees = new int[numCourses];
+
+        for (int course = 0; course < numCourses; course++) {
+            nextCourses.add(new ArrayList<>());
+        }
+
+        for (int[] prerequisite : prerequisites) {
+            int course = prerequisite[0];
+            int previousCourse = prerequisite[1];
+
+            nextCourses.get(previousCourse).add(course);
+            indegrees[course]++;
+        }
+
+        Deque<Integer> queue = new ArrayDeque<>();
+
+        for (int course = 0; course < numCourses; course++) {
+            if (indegrees[course] == 0) {
+                queue.offer(course);
+            }
+        }
+
+        int completedCourses = 0;
+
+        while (!queue.isEmpty()) {
+            int currentCourse = queue.poll();
+            completedCourses++;
+
+            for (int nextCourse : nextCourses.get(currentCourse)) {
+                indegrees[nextCourse]--;
+
+                if (indegrees[nextCourse] == 0) {
+                    queue.offer(nextCourse);
+                }
+            }
+        }
+
+        return completedCourses == numCourses;
     }
 }
